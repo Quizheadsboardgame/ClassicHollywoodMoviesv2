@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #0CC0DF; /* Background color */
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 40%;
+            max-width: 800px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Shadow */
+            padding: 20px;
+        }
+        img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            cursor: pointer;
+            border: 5px solid #0CC0DF; /* Outer blue border color */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .qa-box {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .question {
+            font-size: 1.4em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .answer {
+            font-size: 1.2em;
+            color: #555;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3); /* Text shadow */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img id="quizImage" src="https://i.imgur.com/nOaemXZ.png" alt="Quiz Image">
+        <div class="qa-box">
+            <div id="question" class="question">Click the image to get a question!</div>
+            <div id="answer" class="answer"></div>
+        </div>
+    </div>
+    
+    <script>
+        const questionsAndAnswers = [
+            { question: "Which film features a young girl who discovers that she has magical powers and befriends a mysterious older man?", answer: "Mary Poppins" },
+            { question: "Which classic film features Humphrey Bogart and Ingrid Bergman in a story set during World War II?", answer: "Casablanca" },
+            { question: "Which 1954 film, directed by Alfred Hitchcock, revolves around a man suspected of murder who is being watched by a mysterious stranger?", answer: "Dial M for Murder" },
+            { question: "Which film features Judy Garland as a young girl who dreams of escaping her mundane life for a magical land?", answer: "The Wizard of Oz" },
+            { question: "Which 1942 film stars Joan Fontaine and Cary Grant in a suspenseful story about a woman's troubled life?", answer: "Suspicion" },
+            { question: "Which film features Audrey Hepburn as a young woman with a charmingly eccentric personality who befriends a writer in New York?", answer: "Breakfast at Tiffany's" },
+            { question: "Which 1944 film features Ingrid Bergman as a woman who is manipulated into believing she is going insane?", answer: "Gaslight" },
+            { question: "Which film, directed by Billy Wilder, features a dramatic story about a woman's ambition and the people who cross her path?", answer: "Sunset Boulevard" },
+            { question: "Which classic film features Clark Gable and Vivien Leigh in a dramatic story set against the backdrop of the American Civil War?", answer: "Gone with the Wind" },
+            { question: "Which 1951 film features Marilyn Monroe in a comedic role as a glamorous showgirl?", answer: "Gentlemen Prefer Blondes" },
+            { question: "Which film features Gene Kelly and Debbie Reynolds in a joyful musical set in Hollywood's golden age?", answer: "Singin' in the Rain" },
+            { question: "Which 1957 film, directed by Sidney Lumet, presents a gripping courtroom drama about a jury's deliberations?", answer: "12 Angry Men" },
+            { question: "Which 1939 film features Judy Garland as a young girl who dreams of a land over the rainbow?", answer: "The Wizard of Oz" },
+            { question: "Which film features Cary Grant and Katharine Hepburn in a screwball comedy about a sophisticated woman and a paleontologist?", answer: "Bringing Up Baby" },
+            { question: "Which 1946 film, directed by Frank Capra, tells the story of a man who is shown the value of life by a guardian angel?", answer: "It’s a Wonderful Life" },
+            { question: "Which film stars Marilyn Monroe as a woman who uses her charm to navigate her way through a series of comedic situations?", answer: "Gentlemen Prefer Blondes" },
+            { question: "Which 1954 film, directed by Alfred Hitchcock, is a suspenseful thriller about a woman who is being watched?", answer: "Dial M for Murder" },
+            { question: "Which 1956 film stars Marlon Brando as a dockworker struggling with his past and his future?", answer: "On the Waterfront" },
+            { question: "Which 1934 film, directed by Frank Capra, features a young woman seeking love and adventure?", answer: "It Happened One Night" },
+            { question: "Which film features Fred Astaire and Ginger Rogers in a glamorous dance musical set in a Ritz hotel?", answer: "Top Hat" },
+            { question: "Which 1949 film features Bette Davis as a fading starlet struggling to stay relevant in the Hollywood scene?", answer: "All About Eve" },
+            { question: "Which 1955 film, directed by Delbert Mann, tells a touching story about a working-class man and his community?", answer: "Marty" },
+            { question: "Which film stars Audrey Hepburn as a charming princess who escapes her royal duties for a day in Rome?", answer: "Roman Holiday" },
+            { question: "Which 1950 film, directed by Billy Wilder, tells the story of a woman who will stop at nothing to get revenge on those who wronged her?", answer: "Sunset Boulevard" },
+            { question: "Which 1941 film, directed by Orson Welles, features a media mogul whose life and death are shrouded in mystery?", answer: "Citizen Kane" },
+            { question: "Which 1958 film features a glamorous socialite who falls in love with a young man while exploring Rome?", answer: "Roman Holiday" },
+            { question: "Which 1940 film, directed by Walt Disney, features a wooden puppet who dreams of becoming a real boy?", answer: "Pinocchio" },
+            { question: "Which 1954 film, directed by Alfred Hitchcock, is a suspenseful thriller about a woman suspected of being involved in a murder?", answer: "Dial M for Murder" },
+            { question: "Which 1956 film stars Marlon Brando as a dockworker who must confront his troubled past?", answer: "On the Waterfront" },
+            { question: "Which 1935 film features Fred Astaire and Ginger Rogers in a classic dance musical?", answer: "Top Hat" },
+            { question: "Which 1947 film, directed by Elia Kazan, features a young girl growing up in Brooklyn and her family's struggles?", answer: "A Tree Grows in Brooklyn" },
+            { question: "Which 1959 film, directed by Alfred Hitchcock, follows a man who is mistaken for a secret agent and becomes embroiled in a thrilling adventure?", answer: "North by Northwest" },
+            { question: "Which 1932 film, directed by Michael Curtiz, features a gripping portrayal of crime and justice?", answer: "I Am a Fugitive from a Chain Gang" },
+            { question: "Which 1951 film features Marilyn Monroe as a glamorous showgirl who uses her charm to navigate through life's challenges?", answer: "Gentlemen Prefer Blondes" },
+            { question: "Which 1955 film features a young man from a working-class background struggling with his life and relationships?", answer: "Marty" },
+            { question: "Which 1956 film features Marlon Brando in a powerful role as a dockworker facing personal challenges?", answer: "On the Waterfront" },
+            { question: "Which 1934 film, directed by Frank Capra, is a romantic comedy about a young woman searching for true love?", answer: "It Happened One Night" },
+            { question: "Which 1957 film, directed by Sidney Lumet, revolves around the deliberations of a jury and explores themes of justice and morality?", answer: "12 Angry Men" },
+            { question: "Which 1944 film, directed by George Cukor, features Ingrid Bergman as a woman being manipulated into believing she's losing her sanity?", answer: "Gaslight" },
+            { question: "Which 1955 film, directed by Delbert Mann, tells the story of a young man from a working-class background who finds support from his community?", answer: "Marty" },
+            { question: "Which 1950 film features Gloria Swanson in a dramatic role as a faded star of the silent film era?", answer: "Sunset Boulevard" },
+            { question: "Which 1941 film, directed by Orson Welles, features a media mogul whose life and legacy are explored through a series of flashbacks?", answer: "Citizen Kane" },
+            { question: "Which 1958 film features a thrilling adventure involving mistaken identities and a cross-country chase?", answer: "North by Northwest" },
+            { question: "Which 1947 film, directed by Elia Kazan, is a poignant story about a young girl growing up in a challenging environment?", answer: "A Tree Grows in Brooklyn" },
+            { question: "Which 1935 film features Fred Astaire and Ginger Rogers in a dazzling dance performance?", answer: "Top Hat" },
+            { question: "Which 1939 film features Judy Garland as a young girl who travels to a magical land to find her way home?", answer: "The Wizard of Oz" },
+            { question: "Which 1946 film, directed by Frank Capra, tells the story of a man who learns the true value of life through the help of a guardian angel?", answer: "It’s a Wonderful Life" },
+            { question: "Which 1949 film, directed by Joseph L. Mankiewicz, features Bette Davis as a determined actress trying to reclaim her position in the spotlight?", answer: "All About Eve" },
+            { question: "Which 1959 film, directed by Alfred Hitchcock, features a suspenseful story about a man caught in a web of mistaken identity?", answer: "North by Northwest" },
+            { question: "Which 1953 film features a comedic portrayal of Marilyn Monroe's glamorous lifestyle and its impact on those around her?", answer: "Gentlemen Prefer Blondes" },
+            { question: "Which 1957 film features a powerful courtroom drama and explores the complexities of justice?", answer: "12 Angry Men" },
+            { question: "Which 1932 film features a gripping portrayal of a man on the run from a chain gang?", answer: "I Am a Fugitive from a Chain Gang" },
+            { question: "Which 1950 film, directed by Billy Wilder, is a dramatic portrayal of a faded film star and her quest for relevance?", answer: "Sunset Boulevard" },
+            { question: "Which 1934 film, directed by Frank Capra, features a romantic comedy about a young woman's search for love and adventure?", answer: "It Happened One Night" },
+            { question: "Which 1958 film features a thrilling adventure involving a cross-country chase and mistaken identities?", answer: "North by Northwest" },
+            { question: "Which 1940 film features a wooden puppet who dreams of becoming a real boy and is guided by a fairy?", answer: "Pinocchio" },
+            { question: "Which 1946 film, directed by Frank Capra, tells the story of a man who learns the true value of life through the intervention of a guardian angel?", answer: "It’s a Wonderful Life" },
+            { question: "Which 1951 film features Marilyn Monroe in a comedic role as a glamorous showgirl navigating through a series of humorous situations?", answer: "Gentlemen Prefer Blondes" },
+            { question: "Which 1949 film, directed by Joseph L. Mankiewicz, features Bette Davis as an ambitious actress who faces challenges in her quest for success?", answer: "All About Eve" },
+            { question: "Which 1955 film features a young man from a working-class background who finds support and acceptance in his community?", answer: "Marty" },
+            { question: "Which 1950 film features Gloria Swanson as a fading film star who struggles with her past and present?", answer: "Sunset Boulevard" },
+            { question: "Which 1932 film features a dramatic portrayal of a man struggling against the harsh realities of life on a chain gang?", answer: "I Am a Fugitive from a Chain Gang" },
+            { question: "Which 1934 film, directed by Frank Capra, features a romantic comedy about a young woman's search for love and adventure?", answer: "It Happened One Night" },
+            { question: "Which 1957 film, directed by Sidney Lumet, presents a gripping courtroom drama about the deliberations of a jury?", answer: "12 Angry Men" },
+            { question: "Which 1956 film features Marlon Brando in a powerful role as a dockworker facing personal and social challenges?", answer: "On the Waterfront" },
+            { question: "Which 1958 film features a suspenseful story involving mistaken identities and a thrilling chase across the country?", answer: "North by Northwest" },
+            { question: "Which 1944 film features Ingrid Bergman as a woman who is manipulated into believing she is losing her sanity?", answer: "Gaslight" },
+            { question: "Which 1953 film features Marilyn Monroe in a comedic role as a glamorous showgirl navigating through humorous situations?", answer: "Gentlemen Prefer Blondes" },
+            { question: "Which 1941 film, directed by Orson Welles, features a media mogul whose life and legacy are explored through a series of flashbacks?", answer: "Citizen Kane" },
+            { question: "Which 1955 film features a touching story about a working-class man who finds acceptance and support from his community?", answer: "Marty" },
+            { question: "Which 1956 film features Marlon Brando as a dockworker struggling with his past and future?", answer: "On the Waterfront" },
+            { question: "Which 1947 film, directed by Elia Kazan, features a young girl growing up in Brooklyn and her family's struggles?", answer: "A Tree Grows in Brooklyn" },
+            { question: "Which 1958 film features a thrilling adventure involving mistaken identities and a cross-country chase?", answer: "North by Northwest" },
+            { question: "Which 1940 film features a wooden puppet who dreams of becoming a real boy and is guided by a fairy?", answer: "Pinocchio" },
+            { question: "Which 1957 film, directed by Sidney Lumet, features a gripping courtroom drama about a jury's deliberations?", answer: "12 Angry Men" },
+            { question: "Which 1950 film, directed by Billy Wilder, tells the dramatic story of a faded film star seeking relevance in the Hollywood scene?", answer: "Sunset Boulevard" },
+            { question: "Which 1947 film, directed by Elia Kazan, is a poignant story about a young girl growing up in a challenging environment?", answer: "A Tree Grows in Brooklyn" },
+            { question: "Which 1955 film features a young man from a working-class background who finds acceptance and support from his community?", answer: "Marty" },
+            { question: "Which 1935 film features Fred Astaire and Ginger Rogers in a classic dance musical?", answer: "Top Hat" },
+            { question: "Which 1946 film, directed by Frank Capra, tells the story of a man who learns the value of life through the help of a guardian angel?", answer: "It’s a Wonderful Life" },
+            { question: "Which 1940 film features a wooden puppet who dreams of becoming a real boy and is guided by a fairy?", answer: "Pinocchio" },
+            { question: "Which 1951 film features Marilyn Monroe in a comedic role as a glamorous showgirl?", answer: "Gentlemen Prefer Blondes" },
+            { question: "Which 1957 film, directed by Sidney Lumet, features a gripping courtroom drama about a jury's deliberations?", answer: "12 Angry Men" },
+            { question: "Which 1958 film features a suspenseful story about mistaken identities and a cross-country chase?", answer: "North by Northwest" },
+            { question: "Which 1947 film, directed by Elia Kazan, tells the poignant story of a young girl growing up in Brooklyn?", answer: "A Tree Grows in Brooklyn" },
+            { question: "Which 1934 film, directed by Frank Capra, features a romantic comedy about a young woman searching for love and adventure?", answer: "It Happened One Night" },
+            { question: "Which 1955 film features a young man from a working-class background who finds acceptance and support in his community?", answer: "Marty" }
+        ];
+
+        let currentIndex = -1;
+
+        function getNextQuestion() {
+            currentIndex = (currentIndex + 1) % questionsAndAnswers.length;
+            const qa = questionsAndAnswers[currentIndex];
+            document.getElementById('question').textContent = qa.question;
+            document.getElementById('answer').textContent = "";
+        }
+
+        function showAnswer() {
+            const qa = questionsAndAnswers[currentIndex];
+            document.getElementById('answer').textContent = qa.answer;
+        }
+
+        document.getElementById('quizImage').addEventListener('click', function() {
+            getNextQuestion();
+        });
+
+        document.getElementById('question').addEventListener('click', function() {
+            showAnswer();
+        });
+    </script>
+</body>
+</html>
